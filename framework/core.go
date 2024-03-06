@@ -65,6 +65,11 @@ func (c *Core) FindRouteByRequest(r *http.Request) ControllerHandler {
 	return nil
 }
 
+// 从core中初始化这个Group
+func (c *Core) Group(prefix string) IGroup {
+	return NewGroup(c, prefix)
+}
+
 // 框架核心结构实现Handler接口
 func (c *Core) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	//封装自定义Context
