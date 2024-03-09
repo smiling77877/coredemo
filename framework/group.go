@@ -8,7 +8,7 @@ type IGroup interface {
 	Delete(string, ControllerHandler)
 }
 
-// Group struct 实现了IGroup
+// Group struct 实现了IGroup 如果需要能够多层嵌套通用前缀，可以将prefix改成切片
 type Group struct {
 	core   *Core
 	prefix string

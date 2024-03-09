@@ -10,6 +10,9 @@ func registerRouter(core *framework.Core) {
 	subjectApi := core.Group("/subject")
 	{
 		//需求4：动态路由
-		subjectApi.Get("/list", SubjectListController)
+		subjectApi.Delete("/:id", SubjectDelController)
+		subjectApi.Put("/:id", SubjectUpdateController)
+		subjectApi.Get("/:id", SubjectGetController)
+		subjectApi.Get("/list/all", SubjectListController)
 	}
 }

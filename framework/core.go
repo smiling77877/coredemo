@@ -1,51 +1,53 @@
 package framework
 
 import (
+	"log"
 	"net/http"
 	"strings"
 )
 
 // 框架核心架构
 type Core struct {
-	router map[string]map[string]ControllerHandler // 二级map
+	router map[string]*Tree // all routers
 }
 
 // 初始化框架核心架构
 func NewCore() *Core {
-	//定义二级map
-	getRouter := map[string]ControllerHandler{}
-	postRouter := map[string]ControllerHandler{}
-	putRouter := map[string]ControllerHandler{}
-	deleteRouter := map[string]ControllerHandler{}
-
-	//将二级map写入一级map
-	router := map[string]map[string]ControllerHandler{}
-	router["GET"] = getRouter
-	router["POST"] = postRouter
-	router["PUT"] = putRouter
-	router["DELETE"] = deleteRouter
-
+	//初始化路由
+	router := map[string]*Tree{}
+	router["GET"] = NewTree()
+	router["POST"] = NewTree()
+	router["PUT"] = NewTree()
+	router["DELETE"] = NewTree()
 	return &Core{router: router}
 }
 
+// 匹配GET方法，增加路由规则
 func (c *Core) Get(url string, handler ControllerHandler) {
-	upperUrl := strings.ToUpper(url)
-	c.router["GET"][upperUrl] = handler
+	if err := c.router["GET"].AddRouter(url, handler); err != nil {
+		log.Fatal("add router error: ", err)
+	}
 }
 
+// 匹配POST方法，增加路由规则
 func (c *Core) Post(url string, handler ControllerHandler) {
-	upperUrl := strings.ToUpper(url)
-	c.router["POST"][upperUrl] = handler
+	if err := c.router["POST"].AddRouter(url, handler); err != nil {
+		log.Fatal("add router error: ", err)
+	}
 }
 
+// 匹配PUT方法，增加路由规则
 func (c *Core) Put(url string, handler ControllerHandler) {
-	upperUrl := strings.ToUpper(url)
-	c.router["PUT"][upperUrl] = handler
+	if err := c.router["PUT"].AddRouter(url, handler); err != nil {
+		log.Fatal("add router error: ", err)
+	}
 }
 
+// 匹配DELETE方法，增加路由规则
 func (c *Core) Delete(url string, handler ControllerHandler) {
-	upperUrl := strings.ToUpper(url)
-	c.router["DELETE"][upperUrl] = handler
+	if err := c.router["DELETE"].AddRouter(url, handler); err != nil {
+		log.Fatal("add router error: ", err)
+	}
 }
 
 func (c *Core) FindRouteByRequest(r *http.Request) ControllerHandler {
@@ -53,14 +55,11 @@ func (c *Core) FindRouteByRequest(r *http.Request) ControllerHandler {
 	uri := r.URL.Path
 	method := r.Method
 	upperMethod := strings.ToUpper(method)
-	upperUri := strings.ToUpper(uri)
 
 	//查找第一层map
 	if methodHandlers, ok := c.router[upperMethod]; ok {
 		//查找第二层map
-		if handler, ok := methodHandlers[upperUri]; ok {
-			return handler
-		}
+		return methodHandlers.FindHandler(uri)
 	}
 	return nil
 }
