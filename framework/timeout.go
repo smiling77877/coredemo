@@ -34,12 +34,12 @@ func TimeoutHandler(fun ControllerHandler, d time.Duration) ControllerHandler {
 		select {
 		case p := <-panicChan:
 			log.Println(p)
-			c.responsewriter.WriteHeader(500)
+			c.responseWriter.WriteHeader(500)
 		case <-finish:
 			fmt.Println("finish")
 		case <-durationCtx.Done():
 			c.SetHasTimeout()
-			c.responsewriter.Write([]byte("time out"))
+			c.responseWriter.Write([]byte("time out"))
 		}
 		return nil
 	}
