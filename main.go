@@ -2,19 +2,22 @@ package main
 
 import (
 	"context"
-	"github.com/smiling77877/coredemo/framework"
+	"github.com/smiling77877/coredemo/framework/gin"
 	"github.com/smiling77877/coredemo/framework/middleware"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 func main() {
-	core := framework.NewCore()
-	core.Use(middleware.Recovery())
+	core := gin.New()
+
+	core.Use(gin.Recovery())
 	core.Use(middleware.Cost())
+	core.Use(middleware.Timeout(5 * time.Second))
 
 	registerRouter(core)
 	server := &http.Server{
@@ -36,7 +39,10 @@ func main() {
 	<-quit
 
 	//调用Server.Shutdown来优雅结束
-	if err := server.Shutdown(context.Background()); err != nil {
+	timeoutCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	if err := server.Shutdown(timeoutCtx); err != nil {
 		log.Fatal("Server Shutdown:", err)
 	}
 }
