@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/smiling77877/coredemo/framework/gin"
 	"github.com/smiling77877/coredemo/framework/middleware"
+	"github.com/smiling77877/coredemo/framework/provider/demo"
 	"log"
 	"net/http"
 	"os"
@@ -13,11 +14,13 @@ import (
 )
 
 func main() {
+	//创建engine结构
 	core := gin.New()
+	//绑定具体的服务
+	core.Bind(&demo.DemoServiceProvider{})
 
 	core.Use(gin.Recovery())
 	core.Use(middleware.Cost())
-	core.Use(middleware.Timeout(5 * time.Second))
 
 	registerRouter(core)
 	server := &http.Server{
