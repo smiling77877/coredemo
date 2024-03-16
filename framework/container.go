@@ -96,6 +96,32 @@ func (hade *HadeContainer) findServiceProvider(key string) ServiceProvider {
 
 // Make方式调用内部的make实现
 func (hade *HadeContainer) Make(key string) (interface{}, error) {
+	//hade.lock.RLock()
+	////简单使用读锁会有并发写map的可能
+	//if ins := hade.instances[key]; ins != nil {
+	//	hade.lock.RUnlock()
+	//	return ins, nil
+	//}
+	//hade.lock.RUnlock()
+	//
+	//hade.lock.Lock()
+	//defer hade.lock.Unlock()
+	////双重检查，在获得写锁之后，可能有别的协程已经创建完成，可以直接返回，避免再创建
+	//if ins := hade.instances[key]; ins != nil {
+	//	return ins, nil
+	//}
+	//
+	//sp := hade.providers[key]
+	//if sp == nil {
+	//	return nil, fmt.Errorf("provider %s not bound", key)
+	//}
+	//params := sp.Params(hade)
+	//ins, err := hade.newInstance(sp, params)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//hade.instances[key] = ins
+	//return ins, nil
 	return hade.make(key, nil, false)
 }
 
