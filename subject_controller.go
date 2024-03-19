@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/smiling77877/coredemo/app/provider/demo"
 	"github.com/smiling77877/coredemo/framework/gin"
-	"github.com/smiling77877/coredemo/framework/provider/demo"
 )
 
 func SubjectAddController(c *gin.Context) {

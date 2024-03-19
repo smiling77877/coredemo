@@ -2,9 +2,9 @@ package main
 
 import (
 	"context"
+	"github.com/smiling77877/coredemo/app/provider/demo"
 	"github.com/smiling77877/coredemo/framework/gin"
 	"github.com/smiling77877/coredemo/framework/middleware"
-	"github.com/smiling77877/coredemo/framework/provider/demo"
 	"log"
 	"net/http"
 	"os"
