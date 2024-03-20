@@ -30,7 +30,7 @@ func (sp *DemoProvider) Params(c framework.Container) []interface{} {
 	return []interface{}{sp.c}
 }
 
-// Boot方法我们这里什么逻辑都不执行，只打印一行日志信息
+// Boot方法我们这里什么逻辑都不执行
 func (sp *DemoProvider) Boot(c framework.Container) error {
 	sp.c = c
 	return nil

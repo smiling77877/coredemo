@@ -2,7 +2,6 @@ package demo
 
 import (
 	demoService "github.com/smiling77877/coredemo/app/provider/demo"
-	"github.com/smiling77877/coredemo/framework/contract"
 	"github.com/smiling77877/coredemo/framework/gin"
 )
 
@@ -26,9 +25,11 @@ func NewDemoApi() *DemoApi {
 }
 
 func (api *DemoApi) Demo(c *gin.Context) {
-	appService := c.MustMake(contract.AppKey).(contract.App)
-	baseFolder := appService.BaseFolder()
-	c.JSON(200, baseFolder)
+	//appService := c.MustMake(contract.AppKey).(contract.App)
+	//baseFolder := appService.BaseFolder()
+	users := api.service.GetUsers()
+	usersDTO := UserModelsToUserDTOs(users)
+	c.JSON(200, usersDTO)
 }
 
 func (api *DemoApi) Demo2(c *gin.Context) {
