@@ -8,7 +8,7 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/erikdubbelboer/gspt"
+	"github.com/smiling77877/coredemo/framework/gspt"
 )
 
 func main() {

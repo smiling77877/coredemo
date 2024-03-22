@@ -5,7 +5,6 @@ go 1.22
 require (
 	github.com/bytedance/sonic v1.11.3
 	github.com/cpuguy83/go-md2man/v2 v2.0.4
-	github.com/erikdubbelboer/gspt v0.0.0-20210805194459-ce36a5128377
 	github.com/gin-contrib/sse v0.1.0
 	github.com/go-playground/validator/v10 v10.19.0
 	github.com/goccy/go-json v0.10.2
