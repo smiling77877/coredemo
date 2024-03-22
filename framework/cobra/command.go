@@ -21,6 +21,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"github.com/robfig/cron/v3"
 	"github.com/smiling77877/coredemo/framework"
 	"io"
 	"os"
@@ -59,6 +60,11 @@ type Command struct {
 	//   { } delimits a set of mutually exclusive arguments when one of the arguments is required. If the arguments are
 	//       optional, they are enclosed in brackets ([ ]).
 	// Example: add [-F file | -D dir]... [-f format] profile
+
+	//Command支持cron，只在RootCommand中有这个值
+	Cron *cron.Cron
+	//对应Cron命令的信息
+	CronSpecs []CronSpec
 
 	//服务容器
 	container framework.Container
