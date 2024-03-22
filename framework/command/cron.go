@@ -2,13 +2,14 @@ package command
 
 import (
 	"fmt"
-	"github.com/erikdubbelboer/gspt"
-	"github.com/sevlyar/go-daemon"
-	"github.com/smiling77877/coredemo/framework/cobra"
-	"github.com/smiling77877/coredemo/framework/contract"
 	"os"
 	"path/filepath"
 	"strconv"
+
+	"github.com/sevlyar/go-daemon"
+	"github.com/smiling77877/coredemo/framework/cobra"
+	"github.com/smiling77877/coredemo/framework/contract"
+	"github.com/smiling77877/coredemo/framework/gspt"
 )
 
 var cronDaemon = false
