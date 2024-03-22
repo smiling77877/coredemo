@@ -4,6 +4,7 @@ import (
 	"errors"
 	"path/filepath"
 
+	"github.com/google/uuid"
 	"github.com/smiling77877/coredemo/framework"
 	"github.com/smiling77877/coredemo/framework/util"
 )
@@ -12,6 +13,7 @@ import (
 type HadeApp struct {
 	container  framework.Container //服务容器
 	baseFolder string              //基础路径
+	appID      string
 }
 
 func (h HadeApp) Version() string {
@@ -76,5 +78,6 @@ func NewHadeApp(params ...interface{}) (interface{}, error) {
 	//有两个参数，一个是容器，一个是baseFolder
 	container := params[0].(framework.Container)
 	baseFolder := params[1].(string)
-	return &HadeApp{baseFolder: baseFolder, container: container}, nil
+	appID := uuid.New().String()
+	return &HadeApp{baseFolder: baseFolder, container: container, appID: appID}, nil
 }

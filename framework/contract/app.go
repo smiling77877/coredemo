@@ -5,6 +5,8 @@ const AppKey = "hade:app"
 
 // App定义接口
 type App interface {
+	//AppID表示当前这个app的唯一id，可以用于分布式锁等
+	AppID() string
 	//Version定义当前版本
 	Version() string
 	//BaseFolder定义项目基础地址
