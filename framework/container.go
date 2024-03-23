@@ -60,12 +60,12 @@ func (hade *HadeContainer) PrintProviders() []string {
 // Bind将服务容器和关键字做了绑定
 func (hade *HadeContainer) Bind(provider ServiceProvider) error {
 	hade.lock.Lock()
-	defer hade.lock.Unlock()
 	key := provider.Name()
 
 	hade.providers[key] = provider
+	hade.lock.Unlock()
 
-	if provider.IsDefer() == false {
+	if !provider.IsDefer() {
 		if err := provider.Boot(hade); err != nil {
 			return err
 		}
