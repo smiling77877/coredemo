@@ -81,3 +81,8 @@ func NewHadeApp(params ...interface{}) (interface{}, error) {
 	appID := uuid.New().String()
 	return &HadeApp{baseFolder: baseFolder, container: container, appID: appID}, nil
 }
+
+// AppID表示这个App的唯一ID
+func (h HadeApp) AppID() string {
+	return h.appID
+}

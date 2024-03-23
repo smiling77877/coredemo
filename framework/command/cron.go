@@ -5,11 +5,14 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"syscall"
+	"time"
 
 	"github.com/sevlyar/go-daemon"
 	"github.com/smiling77877/coredemo/framework/cobra"
 	"github.com/smiling77877/coredemo/framework/contract"
 	"github.com/smiling77877/coredemo/framework/gspt"
+	"github.com/smiling77877/coredemo/framework/util"
 )
 
 var cronDaemon = false
@@ -31,6 +34,21 @@ var cronCommand = &cobra.Command{
 		return nil
 	},
 }
+var cronListCommand = &cobra.Command{
+	Use:   "list",
+	Short: "列出所有的定时任务",
+	RunE: func(c *cobra.Command, args []string) error {
+		cronSpecs := c.Root().CronSpecs
+		ps := [][]string{}
+		for _, cronSpec := range cronSpecs {
+			line := []string{cronSpec.Type, cronSpec.Spec, cronSpec.Cmd.Use, cronSpec.Cmd.Short, cronSpec.ServiceName}
+			ps = append(ps, line)
+		}
+		util.PrettyPrint(ps)
+
+		return nil
+	},
+}
 
 // cron进程的启动服务
 var cronStartCommand = &cobra.Command{
@@ -49,7 +67,7 @@ var cronStartCommand = &cobra.Command{
 		serverLogFile := filepath.Join(logFolder, "cron.log")
 		currentFolder := appService.BaseFolder()
 
-		//deamon模式
+		//daemon模式
 		if cronDaemon {
 			//创建一个Context
 			cntxt := &daemon.Context{
@@ -95,6 +113,107 @@ var cronStartCommand = &cobra.Command{
 		}
 		gspt.SetProcTitle("hade cron")
 		c.Root().Cron.Run()
+		return nil
+	},
+}
+
+var cronRestartCommand = &cobra.Command{
+	Use:   "restart",
+	Short: "重启cron常驻进程",
+	RunE: func(c *cobra.Command, args []string) error {
+		container := c.GetContainer()
+		appService := container.MustMake(contract.AppKey).(contract.App)
+
+		//GetPid
+		serverPidFile := filepath.Join(appService.RuntimeFolder(), "cron.pid")
+
+		content, err := os.ReadFile(serverPidFile)
+		if err != nil {
+			return err
+		}
+
+		if len(content) > 0 {
+			pid, err := strconv.Atoi(string(content))
+			if err != nil {
+				return err
+			}
+			if util.CheckProcessExist(pid) {
+				if err := syscall.Kill(pid, syscall.SIGTERM); err != nil {
+					return err
+				}
+				// check process closed
+				for i := 0; i < 10; i++ {
+					if !util.CheckProcessExist(pid) {
+						break
+					}
+					time.Sleep(1 * time.Second)
+				}
+				fmt.Println("kill process:" + strconv.Itoa(pid))
+			}
+		}
+		cronDaemon = true
+		return cronStartCommand.RunE(c, args)
+	},
+}
+
+var cronStopCommand = &cobra.Command{
+	Use:   "stop",
+	Short: "停止cron常驻进程",
+	RunE: func(c *cobra.Command, args []string) error {
+		container := c.GetContainer()
+		appService := container.MustMake(contract.AppKey).(contract.App)
+
+		//GetPid
+		serverPidFile := filepath.Join(appService.RuntimeFolder(), "cron.pid")
+
+		content, err := os.ReadFile(serverPidFile)
+		if err != nil {
+			return err
+		}
+
+		if len(content) > 0 {
+			pid, err := strconv.Atoi(string(content))
+			if err != nil {
+				return err
+			}
+			if err := syscall.Kill(pid, syscall.SIGTERM); err != nil {
+				return err
+			}
+			if err := os.WriteFile(serverPidFile, []byte{}, 0644); err != nil {
+				return err
+			}
+			fmt.Println("stop pid:", pid)
+		}
+		return nil
+	},
+}
+
+var cronStateCommand = &cobra.Command{
+	Use:   "state",
+	Short: "cron常驻进程状态",
+	RunE: func(c *cobra.Command, args []string) error {
+		container := c.GetContainer()
+		appService := container.MustMake(contract.AppKey).(contract.App)
+
+		//GetPid
+		serverPidFile := filepath.Join(appService.RuntimeFolder(), "cron.pid")
+
+		content, err := os.ReadFile(serverPidFile)
+		if err != nil {
+			return err
+		}
+
+		if len(content) > 0 {
+			pid, err := strconv.Atoi(string(content))
+			if err != nil {
+				return err
+			}
+			if util.CheckProcessExist(pid) {
+				fmt.Println("cron server started, pid:", pid)
+				return nil
+			}
+		}
+		fmt.Println("no cron server start")
 		return nil
 	},
 }
