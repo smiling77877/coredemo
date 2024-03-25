@@ -2,6 +2,10 @@ package contract
 
 import "time"
 
+const (
+	ConfigKey = "hade:config"
+)
+
 // Config定义了配置文件服务，读取配置文件，支持点分割的路径读取
 // 例如：.Get("app.name")表示从app文件中读取name属性
 // 建议使用yaml属性
