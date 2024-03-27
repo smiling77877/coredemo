@@ -1,9 +1,11 @@
 package demo
 
 import (
+	"fmt"
 	"log"
 
 	"github.com/smiling77877/coredemo/framework/cobra"
+	"github.com/smiling77877/coredemo/framework/contract"
 )
 
 // InitFoo初始化Foo命令
@@ -20,6 +22,12 @@ var FooCommand = &cobra.Command{
 	Aliases: []string{"fo", "f"},
 	Example: "foo命令的例子",
 	RunE: func(c *cobra.Command, args []string) error {
+		configService := c.GetContainer().MustMake(contract.ConfigKey).(contract.Config)
+		envService := c.GetContainer().MustMake(contract.EnvKey).(contract.Env)
+		fmt.Println("APP_ENV: ", envService.Get("APP_ENV"))
+		fmt.Println("FOO_ENV: ", envService.Get("FOO_ENV"))
+
+		fmt.Println("config url:", configService.GetString("app.url"))
 		return nil
 	},
 }

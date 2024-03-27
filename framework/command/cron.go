@@ -20,6 +20,10 @@ var cronDaemon = false
 func initCronCommand() *cobra.Command {
 	//start命令有一个deamon参数，简称为d
 	cronStartCommand.Flags().BoolVarP(&cronDaemon, "daemon", "d", false, "start serve daemon")
+	cronCommand.AddCommand(cronRestartCommand)
+	cronCommand.AddCommand(cronStateCommand)
+	cronCommand.AddCommand(cronStopCommand)
+	cronCommand.AddCommand(cronListCommand)
 	cronCommand.AddCommand(cronStartCommand)
 	return cronCommand
 }

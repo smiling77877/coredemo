@@ -35,6 +35,13 @@ func (api *DemoApi) Demo(c *gin.Context) {
 	//获取password
 	configService := c.MustMake(contract.ConfigKey).(contract.Config)
 	password := configService.GetString("database.mysql.password")
+
+	logger := c.MustMakeLog()
+	logger.Info(c, "demo test error", map[string]interface{}{
+		"api": "demo/demo",
+		"user": "jianfengye",
+	})
+
 	//打印出来
 	c.JSON(200, password)
 }

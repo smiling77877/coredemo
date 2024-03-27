@@ -1,9 +1,10 @@
 package middleware
 
 import (
-	"github.com/smiling77877/coredemo/framework/gin"
 	"log"
 	"time"
+
+	"github.com/smiling77877/coredemo/framework/gin"
 )
 
 // recovery机制，将协程中的函数异常进行捕获
@@ -13,6 +14,7 @@ func Cost() gin.HandlerFunc {
 		//记录开始时间
 		start := time.Now()
 
+		log.Printf("api uri start: %v", c.Request.RequestURI)
 		//使用next执行具体的业务逻辑
 		c.Next()
 

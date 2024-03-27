@@ -1,5 +1,11 @@
 package gin
 
+import "context"
+
+func (ctx *Context) BaseContext() context.Context {
+	return ctx.Request.Context()
+}
+
 // context实现container的几个封装
 // 实现make的封装
 func (ctx *Context) Make(key string) (interface{}, error) {
