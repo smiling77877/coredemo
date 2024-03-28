@@ -3,13 +3,15 @@ package main
 import (
 	"github.com/smiling77877/coredemo/app/console"
 	"github.com/smiling77877/coredemo/app/http"
-	"github.com/smiling77877/coredemo/app/provider/demo"
 	"github.com/smiling77877/coredemo/framework"
 	"github.com/smiling77877/coredemo/framework/provider/app"
 	"github.com/smiling77877/coredemo/framework/provider/config"
 	"github.com/smiling77877/coredemo/framework/provider/distributed"
 	"github.com/smiling77877/coredemo/framework/provider/env"
+	"github.com/smiling77877/coredemo/framework/provider/id"
 	"github.com/smiling77877/coredemo/framework/provider/kernel"
+	"github.com/smiling77877/coredemo/framework/provider/log"
+	"github.com/smiling77877/coredemo/framework/provider/trace"
 )
 
 func main() {
@@ -21,10 +23,13 @@ func main() {
 	container.Bind(&env.HadeEnvProvider{})
 	container.Bind(&distributed.LocalDistributedProvider{})
 	container.Bind(&config.HadeConfigProvider{})
+	container.Bind(&id.HadeIDProvider{})
+	container.Bind(&trace.HadeTraceProvider{})
+	container.Bind(&log.HadeLogServiceProvider{})
 
 	//将HTTP引擎初始化，并且作为服务提供者绑定到服务容器中
 	if engine, err := http.NewHttpEngine(); err == nil {
-		container.Bind(&demo.DemoProvider{})
+		// container.Bind(&demo.DemoProvider{})
 		container.Bind(&kernel.HadeKernelProvider{HttpEngine: engine})
 	}
 
